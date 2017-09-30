@@ -8,31 +8,41 @@
 
 
 namespace eval {
+	
 	enum class type;
 	class value;
 	class func;
 	class number;
 	class string;
 	class boolean;
+
 	eval::value eval(parser::thing*, std::unordered_map<std::string, eval::value*>&);
 	eval::value* get_var(std::string, std::unordered_map<std::string, eval::value*>&);
+
+	eval::value func_eval(eval::func*, std::vector<eval::value>, std::unordered_map<std::string, eval::value*>&);
+	eval::value func_eval(eval::func*, std::vector<parser::thing *>, std::unordered_map<std::string, eval::value*>&);
+
 }
 
 typedef std::unordered_map<std::string, eval::value*> context;
 enum class eval::type {NUMBER, STRING, BOO, FUNC};
 
-class eval::value {
+class eval::value : public parser::thing {
 	
-	eval::type t;
+	eval::type ty;
 
 public:
 
-	eval::type get_type() {
-		return t;
+	value() {
+		t = parser::type::EVALED;
 	}
 
-	void set_type(eval::type ty) {
-		t = ty;
+	eval::type get_type() {
+		return ty;
+	}
+
+	void set_type(eval::type typ) {
+		ty = typ;
 	}
 
 };
@@ -40,15 +50,27 @@ public:
 class eval::func: public eval::value {
 
 	parser::expression body;
-	int n_args;
 	bool eval_args;
+	bool is_std_fn;
 
 public:
 
-	explicit func(parser::expression func_body, int num_args, bool to_eval_args) {
+	eval::value (*f)(std::vector<parser::thing *>, context&);
+	std::vector<parser::token> arg_list;
+
+	explicit func(parser::expression func_body, std::vector<parser::token> args_list, bool to_eval_args, bool std_fn) {
 		body = func_body;
-		n_args = num_args;
+		arg_list = args_list;
 		eval_args = to_eval_args;
+		is_std_fn = std_fn;
+		set_type(eval::type::FUNC);
+	}
+
+	explicit func(eval::value (*g)(std::vector<parser::thing *>, context&), std::vector<parser::token> args_list, bool to_eval_args, bool std_fn) {
+		f = g;
+		arg_list = args_list;
+		eval_args = to_eval_args;
+		is_std_fn = std_fn;
 		set_type(eval::type::FUNC);
 	}
 
@@ -57,11 +79,15 @@ public:
 	}
 
 	int get_n_args() {
-		return n_args;
+		return arg_list.size();
 	}
 
 	bool to_eval_args() {
 		return eval_args;
+	}
+
+	bool is_std() {
+		return is_std_fn;
 	}
 
 };
