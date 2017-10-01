@@ -16,15 +16,14 @@ namespace eval {
 	class string;
 	class boolean;
 
-	eval::value eval(parser::thing*, std::unordered_map<std::string, eval::value*>&);
-	eval::value* get_var(std::string, std::unordered_map<std::string, eval::value*>&);
+	eval::value *eval(parser::thing*, std::unordered_map<std::string, eval::value*>&);
+	eval::value *get_var(std::string, std::unordered_map<std::string, eval::value*>&);
 
-	eval::value func_eval(eval::func*, std::vector<eval::value>, std::unordered_map<std::string, eval::value*>&);
-	eval::value func_eval(eval::func*, std::vector<parser::thing *>, std::unordered_map<std::string, eval::value*>&);
+	eval::value *func_eval(eval::func*, std::vector<parser::thing *>, std::unordered_map<std::string, eval::value*>&);
 
 }
 
-typedef std::unordered_map<std::string, eval::value*> context;
+typedef std::unordered_map<std::string, eval::value *> context;
 enum class eval::type {NUMBER, STRING, BOO, FUNC};
 
 class eval::value : public parser::thing {
@@ -50,12 +49,12 @@ public:
 class eval::func: public eval::value {
 
 	parser::expression body;
-	bool eval_args;
+	bool eval_args, var_args;
 	bool is_std_fn;
 
 public:
 
-	eval::value (*f)(std::vector<parser::thing *>, context&);
+	eval::value* (*f)(std::vector<parser::thing *>, context&);
 	std::vector<parser::token> arg_list;
 
 	explicit func(parser::expression func_body, std::vector<parser::token> args_list, bool to_eval_args, bool std_fn) {
@@ -66,11 +65,14 @@ public:
 		set_type(eval::type::FUNC);
 	}
 
-	explicit func(eval::value (*g)(std::vector<parser::thing *>, context&), std::vector<parser::token> args_list, bool to_eval_args, bool std_fn) {
+	explicit func(eval::value* (*g)(std::vector<parser::thing *>, context&),
+				  std::vector<parser::token> args_list, bool to_eval_args,
+				  bool std_fn, bool v_args) {
 		f = g;
 		arg_list = args_list;
 		eval_args = to_eval_args;
 		is_std_fn = std_fn;
+		var_args = v_args;
 		set_type(eval::type::FUNC);
 	}
 
@@ -80,6 +82,10 @@ public:
 
 	int get_n_args() {
 		return arg_list.size();
+	}
+
+	bool has_var_args() {
+		return var_args;
 	}
 
 	bool to_eval_args() {

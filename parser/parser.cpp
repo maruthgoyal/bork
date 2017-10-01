@@ -5,14 +5,14 @@
 #include <vector>
 
 #include "parser.hpp"
-#include "../scheme.hpp"
+#include "../stdlib/stdlib.hpp"
 
 parser::thing* parse_(std::string s, int& i, std::vector<char>& stack) {
  
   while (std::isspace(s[i]) && i < s.length()) i++;
 
   if (s[i] == '(') {
- 
+
     parser::expression* e = new parser::expression;
 
     stack.push_back('(');
@@ -29,9 +29,10 @@ parser::thing* parse_(std::string s, int& i, std::vector<char>& stack) {
   else if (s[i] == ')') {
    
     if (stack.empty())
-      scheme::exit("UNMATCHED BRACES");
+      stdlib::exit("UNMATCHED BRACES");
   
     stack.pop_back();
+    i++;
   
   }
 
