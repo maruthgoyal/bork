@@ -21,6 +21,10 @@ void init_stdlib(context &t) {
 									 false, true, false
 									);
 
+	eval::func *ifelse = new eval::func(stdlib::ifelse,
+										new std::vector<parser::token *>({NULL, NULL, NULL}),
+										false, true, false
+										);
 
 
 	t[std::string("+")] = add;
@@ -28,6 +32,7 @@ void init_stdlib(context &t) {
 	t[std::string("*")] = mul;
 	t[std::string("/")] = div;
 	t[std::string("define")] = def;
+	t[std::string("if")] = ifelse;
 
 }
 
@@ -39,7 +44,9 @@ int main() {
 	context c;
 	init_stdlib(c);
 
-	(eval::eval(parser::parse(s), c));
+	eval::number *n = static_cast<eval::number *>(eval::eval(parser::parse(s), c));
+	std::cout << n->get_val() << std::endl;
 
 	return 0;
+	
 }

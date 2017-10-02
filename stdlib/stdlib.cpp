@@ -171,3 +171,19 @@ eval::value *stdlib::define(std::vector<parser::thing *> args, context &c) {
 
 	return NULL;
 }
+
+eval::value *stdlib::ifelse(std::vector<parser::thing *> args, context &c) {
+
+	eval::value *e = eval::eval(args[1], c);
+
+	if (e->get_type() != eval::type::BOO)
+		stdlib::exit("FIRST ARGUMENT TO IF MUST BE A BOOLEAN EXPRESSION.");
+
+	eval::boolean *b = static_cast<eval::boolean *>(e);
+
+	if (b->get_val())
+		return eval::eval(args[2], c);
+
+	return eval::eval(args[3], c);
+
+}
