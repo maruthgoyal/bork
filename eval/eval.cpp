@@ -13,27 +13,27 @@ bool is_digits(const std::string &str) {
     return str.find_first_not_of(".0123456789") == std::string::npos;
 }
 
-void sub_arg(parser::expression* e, parser::token to_replace, eval::value *val) {
+// void sub_arg(parser::expression* e, parser::token to_replace, eval::value *val) {
 
-	for(int i = 0; i < e->things.size(); i++) {
+// 	for(int i = 0; i < e->things.size(); i++) {
 
-		if (e->things[i]->t == parser::type::TOKEN) {
+// 		if (e->things[i]->t == parser::type::TOKEN) {
 
-			parser::token *t = static_cast<parser::token *>(e->things[i]);
+// 			parser::token *t = static_cast<parser::token *>(e->things[i]);
 
-			if ( t->get_content().compare(to_replace.get_content()) == 0)
-				*(e->things[i]) = *val;
+// 			if ( t->get_content().compare(to_replace.get_content()) == 0)
+// 				*(e->things[i]) = *val;
 		
-		}
+// 		}
 
-		else if (e->things[i]->t == parser::type::EXPRESSION) {
-			parser::expression *e_prime = static_cast<parser::expression *>(e->things[i]);
-			sub_arg(e_prime, to_replace, val);
-		}
+// 		else if (e->things[i]->t == parser::type::EXPRESSION) {
+// 			parser::expression *e_prime = static_cast<parser::expression *>(e->things[i]);
+// 			sub_arg(e_prime, to_replace, val);
+// 		}
 	
-	}
+// 	}
 
-}
+// }
 
 eval::value* eval::get_var(std::string s, context& c) {
 	if (c.count(s) == 0)
@@ -54,14 +54,22 @@ eval::value *eval::func_eval(eval::func *func, std::vector<parser::thing *> args
 		e_args.push_back(eval::eval(args[i], c));
 	}
 
-	parser::expression e = func->get_body();
-	for(int i = 0; i < func->arg_list.size(); i++) {
+	parser::expression *e = func->get_body();
+	for(int i = 0; i < func->arg_list->size(); i++) {
 
-		sub_arg(&e, func->arg_list[i], e_args[i]);
+		c[((*(func->arg_list))[i])->get_content()] = e_args[i];
 
 	}
 
-	return eval::eval(&e, c);	
+	eval::value *val = eval::eval(e, c);
+
+	for(int i = 0; i < func->arg_list->size(); i++) {
+
+		c.erase(((*(func->arg_list))[i])->get_content());
+
+	}
+
+	return val;
 
 }
 
@@ -108,7 +116,7 @@ eval::value *eval::eval(parser::thing *thing, context& c) {
 
 		eval::func *f =  static_cast<eval::func *>(v);
 
-		if (!f->has_var_args() && f->get_n_args() != e->things.size()) {
+		if (!f->has_var_args() && f->get_n_args() != (e->things.size() - 1)) {
 			std::cout << f->get_n_args() << ' ' << f->has_var_args() << std::endl;
 			stdlib::exit("INCORRECT NUMBER OF ARGUMENTS.");
 		}

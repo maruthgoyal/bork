@@ -63,10 +63,14 @@ public:
 
   }
 
-  void insert_thing(thing *t) {
+  bool insert_thing(thing *t) {
 
-    if (t != NULL) 
+    if (t != NULL) {
       things.push_back(t);
+      return true;
+    }
+
+    return false;
     
   }
 

@@ -19,7 +19,8 @@ parser::thing* parse_(std::string s, int& i, std::vector<char>& stack) {
     i++;
 
     while (!stack.empty()) {
-      e->insert_thing(parse_(s, i, stack));
+      if(!(e->insert_thing(parse_(s, i, stack))))
+        break;
     }  // stack empty checking WHILE ENDs
 
     return e;

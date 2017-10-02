@@ -11,9 +11,11 @@ namespace stdlib {
 	eval::value *subtract(std::vector<parser::thing *> args, context &c);
 	eval::value *multiply(std::vector<parser::thing *> args, context &c);
 	eval::value *divide(std::vector<parser::thing *> args, context &c);
+	eval::value *define(std::vector<parser::thing *> args, context &c);
+
 
 	void exit(std::string msg);
-	
+
 }
 
 

@@ -48,16 +48,16 @@ public:
 
 class eval::func: public eval::value {
 
-	parser::expression body;
+	parser::expression *body;
 	bool eval_args, var_args;
 	bool is_std_fn;
 
 public:
 
 	eval::value* (*f)(std::vector<parser::thing *>, context&);
-	std::vector<parser::token> arg_list;
+	std::vector<parser::token *> *arg_list;
 
-	explicit func(parser::expression func_body, std::vector<parser::token> args_list, bool to_eval_args, bool std_fn) {
+	explicit func(parser::expression *func_body, std::vector<parser::token *> *args_list, bool to_eval_args, bool std_fn) {
 		body = func_body;
 		arg_list = args_list;
 		eval_args = to_eval_args;
@@ -66,7 +66,7 @@ public:
 	}
 
 	explicit func(eval::value* (*g)(std::vector<parser::thing *>, context&),
-				  std::vector<parser::token> args_list, bool to_eval_args,
+				  std::vector<parser::token *> *args_list, bool to_eval_args,
 				  bool std_fn, bool v_args) {
 		f = g;
 		arg_list = args_list;
@@ -76,12 +76,12 @@ public:
 		set_type(eval::type::FUNC);
 	}
 
-	parser::expression get_body() {
+	parser::expression *get_body() {
 		return body;
 	}
 
 	int get_n_args() {
-		return arg_list.size();
+		return arg_list->size();
 	}
 
 	bool has_var_args() {

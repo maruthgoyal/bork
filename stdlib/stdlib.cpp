@@ -140,3 +140,34 @@ eval::value *stdlib::divide(std::vector<parser::thing *> args, context& c) {
 	stdlib::exit("DIVIDE ONLY WORKS WITH NUMBERS.");
 
 }
+
+eval::value *stdlib::define(std::vector<parser::thing *> args, context &c) {
+
+	if (args[1]->t == parser::type::TOKEN) { // variable
+		parser::token *t = static_cast<parser::token *>(args[1]);
+		c[t->get_content()] = eval::eval(args[2], c);
+	}
+
+	else if (args[1]->t == parser::type::EXPRESSION) { // func
+
+		parser::expression *e = static_cast<parser::expression *>(args[1]);
+
+		std::vector<parser::token *> *arg_list = new std::vector<parser::token *>();
+
+		for(int i = 1; i < e->things.size(); i++) {
+			if (e->things[i]->t != parser::type::TOKEN)
+				stdlib::exit("ARGS MUST BE TOKENS.");
+			arg_list->push_back(static_cast<parser::token *>(e->things[i]));
+		}
+
+		if (e->things[0]->t != parser::type::TOKEN)
+			stdlib::exit("NAME MUST BE A TOKEN");
+
+		parser::token *t = static_cast<parser::token *>(e->things[0]);
+		parser::expression *exp = static_cast<parser::expression *>(args[2]);
+		c[t->get_content()] = new eval::func(exp, arg_list, true, false); 
+
+	}
+
+	return NULL;
+}

@@ -11,15 +11,23 @@
 
 void init_stdlib(context &t) {
 
-	eval::func *add = new eval::func(stdlib::add, std::vector<parser::token>(), false, true, true);
-	eval::func *sub = new eval::func(stdlib::subtract, std::vector<parser::token>(), false, true, true);
-	eval::func *mul = new eval::func(stdlib::multiply, std::vector<parser::token>(), false, true, true);
-	eval::func *div = new eval::func(stdlib::divide, std::vector<parser::token>(), false, true, true);
+	eval::func *add = new eval::func(stdlib::add, NULL, false, true, true);
+	eval::func *sub = new eval::func(stdlib::subtract, NULL, false, true, true);
+	eval::func *mul = new eval::func(stdlib::multiply, NULL, false, true, true);
+	eval::func *div = new eval::func(stdlib::divide, NULL, false, true, true);
+	
+	eval::func *def = new eval::func(stdlib::define, 
+									 new std::vector<parser::token *>({NULL, NULL}),
+									 false, true, false
+									);
+
+
 
 	t[std::string("+")] = add;
 	t[std::string("-")] = sub;
 	t[std::string("*")] = mul;
 	t[std::string("/")] = div;
+	t[std::string("define")] = def;
 
 }
 
@@ -31,8 +39,7 @@ int main() {
 	context c;
 	init_stdlib(c);
 
-	eval::number *n = static_cast<eval::number *>(eval::eval(parser::parse(s), c));
-	std::cout << n->get_val() << std::endl;
+	(eval::eval(parser::parse(s), c));
 
 	return 0;
 }
