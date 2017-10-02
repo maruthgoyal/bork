@@ -44,6 +44,8 @@ public:
 		ty = typ;
 	}
 
+	virtual std::string to_string();
+
 };
 
 class eval::func: public eval::value {
@@ -96,6 +98,10 @@ public:
 		return is_std_fn;
 	}
 
+	std::string to_string() {
+		return std::string("");
+	}
+
 };
 
 class eval::number: public eval::value {
@@ -111,6 +117,10 @@ public:
 
 	double get_val() {
 		return val;
+	}
+
+	std::string to_string() {
+		return std::to_string(val);
 	}
 
 };
@@ -130,6 +140,10 @@ public:
 		return val;
 	}
 
+	std::string to_string() {
+		return val;
+	}
+
 };
 
 class eval::boolean: public eval::value {
@@ -144,6 +158,19 @@ public:
 
 	bool get_val() {
 		return val;
+	}
+
+	void negate() {
+		val = !val;
+	}
+
+	std::string to_string() {
+
+		if (val)
+			return std::string("true");
+
+		return std::string("false");
+
 	}
 };
 

@@ -11,6 +11,10 @@ void stdlib::exit(std::string msg) {
 	std::exit(1);
 }
 
+/********************************************
+	* ARITHMETIC FUNCTIONS BEGIN
+********************************************/
+
 eval::value *stdlib::add(std::vector<parser::thing *> args, context& c) {
 
 	std::vector<eval::value *> e_args;
@@ -140,6 +144,242 @@ eval::value *stdlib::divide(std::vector<parser::thing *> args, context& c) {
 	stdlib::exit("DIVIDE ONLY WORKS WITH NUMBERS.");
 
 }
+
+/********************************************
+	* ARITHMETIC FUNCTIONS END
+********************************************/
+
+
+
+
+/********************************************
+	* COMPARISON FUNCTIONS BEGIN
+********************************************/
+
+eval::value *eq(std::vector<parser::thing *> args, context &c) {
+
+	std::vector<eval::value *> e_args;
+	for(int i = 1; i < args.size(); i++) {
+		e_args.push_back(eval::eval(args[i], c));
+	}
+
+	if (e_args[0]->get_type() != e_args[1]->get_type())
+		stdlib::exit("Cannot compare vars of 2 diff types");
+
+	if (e_args[0]->get_type() == eval::type::NUMBER) {
+		
+		eval::number *n1 = static_cast<eval::number *>(e_args[0]);
+		eval::number *n2 = static_cast<eval::number *>(e_args[1]);
+
+		return new eval::boolean(n1->get_val() == n2->get_val());
+
+	}
+
+	else if (e_args[0]->get_type() == eval::type::BOO) {
+
+		eval::boolean *b1 = static_cast<eval::boolean *>(e_args[0]);
+		eval::boolean *b2 = static_cast<eval::boolean *>(e_args[1]);
+
+		return new eval::boolean(b1->get_val() == b2->get_val());
+
+	}
+
+	else if (e_args[0]->get_type() == eval::type::STRING) {
+
+		eval::string *s1 = static_cast<eval::string *>(e_args[0]);
+		eval::string *s2 = static_cast<eval::string *>(e_args[1]);
+
+		return new eval::boolean(s1->get_val() == s2->get_val());
+
+	}
+
+	stdlib::exit("CANNOT COMPARE EQUALITY OF NON INTEGER/STRING/BOOL");
+
+}
+
+eval::value *neq(std::vector<parser::thing *> args, context &c) {
+	eval::boolean *b = static_cast<eval::boolean *>(eq(args, c));
+	b->negate();
+	return b;
+}
+
+eval::value *lt(std::vector<parser::thing *> args, context &c) {
+
+
+	std::vector<eval::value *> e_args;
+	for(int i = 1; i < args.size(); i++) {
+		e_args.push_back(eval::eval(args[i], c));
+	}
+
+	if (e_args[0]->get_type() != e_args[1]->get_type())
+		stdlib::exit("Cannot compare vars of 2 diff types");
+
+	if (e_args[0]->get_type() == eval::type::NUMBER) {
+		
+		eval::number *n1 = static_cast<eval::number *>(e_args[0]);
+		eval::number *n2 = static_cast<eval::number *>(e_args[1]);
+
+		return new eval::boolean(n1->get_val() < n2->get_val());
+
+	}
+
+	stdlib::exit("CANNOT COMPARE EQUALITY OF NON NUMBER");
+
+}
+
+eval::value *gt(std::vector<parser::thing *> args, context &c) {
+	eval::boolean *b = static_cast<eval::boolean *>(lt(args, c));
+	b->negate();
+	return b;
+}
+
+eval::value *lte(std::vector<parser::thing *> args, context &c) {
+
+
+	std::vector<eval::value *> e_args;
+	for(int i = 1; i < args.size(); i++) {
+		e_args.push_back(eval::eval(args[i], c));
+	}
+
+	if (e_args[0]->get_type() != e_args[1]->get_type())
+		stdlib::exit("Cannot compare vars of 2 diff types");
+
+	if (e_args[0]->get_type() == eval::type::NUMBER) {
+		
+		eval::number *n1 = static_cast<eval::number *>(e_args[0]);
+		eval::number *n2 = static_cast<eval::number *>(e_args[1]);
+
+		return new eval::boolean(n1->get_val() <= n2->get_val());
+
+	}
+
+	stdlib::exit("CANNOT COMPARE EQUALITY OF NON NUMBER");
+
+}
+
+eval::value *gte(std::vector<parser::thing *> args, context &c) {
+
+
+	std::vector<eval::value *> e_args;
+	for(int i = 1; i < args.size(); i++) {
+		e_args.push_back(eval::eval(args[i], c));
+	}
+
+	if (e_args[0]->get_type() != e_args[1]->get_type())
+		stdlib::exit("Cannot compare vars of 2 diff types");
+
+	if (e_args[0]->get_type() == eval::type::NUMBER) {
+		
+		eval::number *n1 = static_cast<eval::number *>(e_args[0]);
+		eval::number *n2 = static_cast<eval::number *>(e_args[1]);
+
+		return new eval::boolean(n1->get_val() >= n2->get_val());
+
+	}
+
+	stdlib::exit("CANNOT COMPARE EQUALITY OF NON NUMBER");
+
+}
+
+
+/********************************************
+	* COMPARISON FUNCTIONS END
+********************************************/
+
+
+
+/********************************************
+	* BINARY FUNCTIONS BEGIN
+********************************************/
+
+eval::value *and_(std::vector<parser::thing *> args, context &c) {
+
+	std::vector<eval::value *> e_args;
+	for(int i = 1; i < args.size(); i++) {
+		e_args.push_back(eval::eval(args[i], c));
+	}
+
+	if (e_args[0]->get_type() == eval::type::BOO) {
+
+		bool final = (static_cast<eval::boolean *>(e_args[0]))->get_val();
+
+		for (int i = 1; i < e_args.size(); i++) {
+
+			if (e_args[i]->get_type() != eval::type::BOO)
+				stdlib::exit("ALL ARGUMENTS TO and MUST BE booleans");
+
+			eval::boolean* n = static_cast<eval::boolean *>(e_args[i]);
+			final = n->get_val() && final;
+
+		}
+
+		return new eval::boolean(final);
+
+	}
+
+	stdlib::exit("AND ONLY WORKS WITH BOOLEANS.");
+
+}
+eval::value *or_(std::vector<parser::thing *> args, context &c) {
+
+	std::vector<eval::value *> e_args;
+	for(int i = 1; i < args.size(); i++) {
+		e_args.push_back(eval::eval(args[i], c));
+	}
+
+	if (e_args[0]->get_type() == eval::type::BOO) {
+
+		bool final = (static_cast<eval::boolean *>(e_args[0]))->get_val();
+
+		for (int i = 1; i < e_args.size(); i++) {
+
+			if (e_args[i]->get_type() != eval::type::BOO)
+				stdlib::exit("ALL ARGUMENTS TO and MUST BE booleans");
+
+			eval::boolean* n = static_cast<eval::boolean *>(e_args[i]);
+			final = n->get_val() || final;
+
+		}
+
+		return new eval::boolean(final);
+
+	}
+
+	stdlib::exit("OR ONLY WORKS WITH BOOLEANS.");
+
+}
+
+eval::value *not_(std::vector<parser::thing *> args, context &c) {
+	
+	eval::value *v = eval::eval(args[1], c);
+
+	if (v->get_type() == eval::type::BOO) {
+		eval::boolean *b = static_cast<eval::boolean *>(v);
+		b->negate();
+		return b;
+	}
+
+	stdlib::exit("NOT ONLY WORKS WITH BOOLEANS");
+}
+
+/********************************************
+	* BINARY FUNCTIONS END
+********************************************/
+
+eval::value *display(std::vector<parser::thing *> args, context &c) {
+	
+	std::vector<eval::value *> e_args;
+	for(int i = 1; i < args.size(); i++) {
+		e_args.push_back(eval::eval(args[i], c));
+	}
+
+	for(int i = 0; i < e_args.size(); i++) {
+		std::cout << (e_args[i])->to_string() << std::endl;
+	}
+
+}
+
+
 
 eval::value *stdlib::define(std::vector<parser::thing *> args, context &c) {
 
