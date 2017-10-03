@@ -40,11 +40,24 @@ parser::thing* parse_(std::string s, int& i, std::vector<char>& stack) {
   else {
    
     std::string buff;
+    bool ignore_space = false, started_string = false;
 
-    while (!isspace(s[i]) && s[i] != ')') {
+    while ((ignore_space || !isspace(s[i])) && s[i] != ')') {
       
       buff.push_back(s[i]);
       i++;
+
+      if (s[i-1] == '"') {
+        
+        if (!started_string) {
+          started_string = true;
+          ignore_space = true;
+        }
+
+        else
+          break;
+
+      }
     
     }
 
