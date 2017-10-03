@@ -156,7 +156,7 @@ eval::value *stdlib::divide(std::vector<parser::thing *> args, context& c) {
 	* COMPARISON FUNCTIONS BEGIN
 ********************************************/
 
-eval::value *eq(std::vector<parser::thing *> args, context &c) {
+eval::value *stdlib::eq(std::vector<parser::thing *> args, context &c) {
 
 	std::vector<eval::value *> e_args;
 	for(int i = 1; i < args.size(); i++) {
@@ -197,13 +197,13 @@ eval::value *eq(std::vector<parser::thing *> args, context &c) {
 
 }
 
-eval::value *neq(std::vector<parser::thing *> args, context &c) {
+eval::value *stdlib::neq(std::vector<parser::thing *> args, context &c) {
 	eval::boolean *b = static_cast<eval::boolean *>(eq(args, c));
 	b->negate();
 	return b;
 }
 
-eval::value *lt(std::vector<parser::thing *> args, context &c) {
+eval::value *stdlib::lt(std::vector<parser::thing *> args, context &c) {
 
 
 	std::vector<eval::value *> e_args;
@@ -227,13 +227,13 @@ eval::value *lt(std::vector<parser::thing *> args, context &c) {
 
 }
 
-eval::value *gt(std::vector<parser::thing *> args, context &c) {
+eval::value *stdlib::gt(std::vector<parser::thing *> args, context &c) {
 	eval::boolean *b = static_cast<eval::boolean *>(lt(args, c));
 	b->negate();
 	return b;
 }
 
-eval::value *lte(std::vector<parser::thing *> args, context &c) {
+eval::value *stdlib::lte(std::vector<parser::thing *> args, context &c) {
 
 
 	std::vector<eval::value *> e_args;
@@ -257,7 +257,7 @@ eval::value *lte(std::vector<parser::thing *> args, context &c) {
 
 }
 
-eval::value *gte(std::vector<parser::thing *> args, context &c) {
+eval::value *stdlib::gte(std::vector<parser::thing *> args, context &c) {
 
 
 	std::vector<eval::value *> e_args;
@@ -292,7 +292,7 @@ eval::value *gte(std::vector<parser::thing *> args, context &c) {
 	* BINARY FUNCTIONS BEGIN
 ********************************************/
 
-eval::value *and_(std::vector<parser::thing *> args, context &c) {
+eval::value *stdlib::and_(std::vector<parser::thing *> args, context &c) {
 
 	std::vector<eval::value *> e_args;
 	for(int i = 1; i < args.size(); i++) {
@@ -320,7 +320,7 @@ eval::value *and_(std::vector<parser::thing *> args, context &c) {
 	stdlib::exit("AND ONLY WORKS WITH BOOLEANS.");
 
 }
-eval::value *or_(std::vector<parser::thing *> args, context &c) {
+eval::value *stdlib::or_(std::vector<parser::thing *> args, context &c) {
 
 	std::vector<eval::value *> e_args;
 	for(int i = 1; i < args.size(); i++) {
@@ -349,7 +349,7 @@ eval::value *or_(std::vector<parser::thing *> args, context &c) {
 
 }
 
-eval::value *not_(std::vector<parser::thing *> args, context &c) {
+eval::value *stdlib::not_(std::vector<parser::thing *> args, context &c) {
 	
 	eval::value *v = eval::eval(args[1], c);
 
@@ -366,7 +366,7 @@ eval::value *not_(std::vector<parser::thing *> args, context &c) {
 	* BINARY FUNCTIONS END
 ********************************************/
 
-eval::value *display(std::vector<parser::thing *> args, context &c) {
+eval::value *stdlib::display(std::vector<parser::thing *> args, context &c) {
 	
 	std::vector<eval::value *> e_args;
 	for(int i = 1; i < args.size(); i++) {

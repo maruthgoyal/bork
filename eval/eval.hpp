@@ -44,7 +44,7 @@ public:
 		ty = typ;
 	}
 
-	virtual std::string to_string();
+	virtual std::string to_string() {return std::string("");};
 
 };
 

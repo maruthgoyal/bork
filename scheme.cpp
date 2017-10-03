@@ -93,13 +93,15 @@ void init_stdlib(context &t) {
 int main() {
 
 	std::string s;
-	std::getline(std::cin, s);
-
 	context c;
 	init_stdlib(c);
 
-	eval::number *n = static_cast<eval::number *>(eval::eval(parser::parse(s), c));
-	std::cout << n->get_val() << std::endl;
+	while (true) {
+
+		std::getline(std::cin, s);
+		eval::eval(parser::parse(s), c);
+		
+	}
 
 	return 0;
 	

@@ -50,7 +50,7 @@ eval::value *eval::func_eval(eval::func *func, std::vector<parser::thing *> args
 
 
 	std::vector<eval::value *> e_args;
-	for(int i = 0; i < args.size(); i++) {
+	for(int i = 1; i < args.size(); i++) {
 		e_args.push_back(eval::eval(args[i], c));
 	}
 
