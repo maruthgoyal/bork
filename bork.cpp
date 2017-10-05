@@ -31,13 +31,13 @@ SOFTWARE.
 #include "eval/eval.hpp"
 #include "stdlib/stdlib.hpp"
 #include "util/pprint.hpp"
-#include "scheme.hpp"
+#include "bork.hpp"
 
 /* Initializes Environment
 	* context --> std::unordered_map<std::string, eval::value *>
 	* Adds all the standard functions to the env
 */
-void scheme::init_stdlib(context &t) {
+void bork::init_stdlib(context &t) {
 
 	eval::func *add = new eval::func(stdlib::add, NULL, false, true, true);
 	eval::func *sub = new eval::func(stdlib::subtract, NULL, false, true, true);
@@ -128,7 +128,7 @@ void repl() {
 
 	std::string s;
 	context c;
-	scheme::init_stdlib(c);
+	bork::init_stdlib(c);
 
 	while (true) {
 
@@ -182,7 +182,7 @@ void from_file(std::string filename) {
 	std::string buf;
 
 	context c;
-	scheme::init_stdlib(c);
+	bork::init_stdlib(c);
 
 	while (f.good()) {
 		
@@ -209,9 +209,6 @@ void pretty_print(std::string filename) {
 	std::ifstream f(filename);
 	std::ofstream of(filename + "___");
 	std::string buf;
-
-	context c;
-	scheme::init_stdlib(c);
 
 	while (f.good()) {
 		read_exp(f, buf);

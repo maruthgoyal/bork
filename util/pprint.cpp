@@ -23,6 +23,7 @@ SOFTWARE.
 #include <string>
 #include <iostream>
 #include "../parser/parser.hpp"
+#include "pprint.hpp"
 
 
 std::string pprint_(parser::thing *t, int i) {
@@ -62,6 +63,6 @@ std::string pprint_(parser::thing *t, int i) {
 
 }
 
-std::string pprint(std::string s) {
+std::string util::pprint(std::string s) {
 	return pprint_(parser::parse(s), 0);
 }
