@@ -8,6 +8,7 @@
 #include "../parser/parser.hpp"
 #include "../stdlib/stdlib.hpp"
 #include "eval.hpp"
+#include "../scheme.hpp"
 
 bool is_digits(const std::string &str) {
     return str.find_first_not_of(".0123456789") == std::string::npos;
@@ -54,20 +55,28 @@ eval::value *eval::func_eval(eval::func *func, std::vector<parser::thing *> args
 		e_args.push_back(eval::eval(args[i], c));
 	}
 
+	context c2;
+	scheme::init_stdlib(c2);
+
+	for (auto i : c) {
+		if ((i.second)->get_type() == eval::type::FUNC)
+			c2[i.first] = i.second;
+	}
+
 	parser::expression *e = func->get_body();
 	for(int i = 0; i < func->arg_list->size(); i++) {
 
-		c[((*(func->arg_list))[i])->get_content()] = e_args[i];
+		c2[((*(func->arg_list))[i])->get_content()] = e_args[i];
 
 	}
 
-	eval::value *val = eval::eval(e, c);
+	eval::value *val = eval::eval(e, c2);
 
-	for(int i = 0; i < func->arg_list->size(); i++) {
+	// for(int i = 0; i < func->arg_list->size(); i++) {
 
-		c.erase(((*(func->arg_list))[i])->get_content());
+	// 	c.erase(((*(func->arg_list))[i])->get_content());
 
-	}
+	// }
 
 	return val;
 

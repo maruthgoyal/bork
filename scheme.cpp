@@ -9,13 +9,13 @@
 #include "scheme.hpp"
 
 
-void init_stdlib(context &t) {
+void scheme::init_stdlib(context &t) {
 
 	eval::func *add = new eval::func(stdlib::add, NULL, false, true, true);
 	eval::func *sub = new eval::func(stdlib::subtract, NULL, false, true, true);
 	eval::func *mul = new eval::func(stdlib::multiply, NULL, false, true, true);
 	eval::func *div = new eval::func(stdlib::divide, NULL, false, true, true);
-	
+	eval::func *mod = new eval::func(stdlib::modulus, NULL, false, true, true);
 
 	eval::func *def = new eval::func(stdlib::define, 
 									 new std::vector<parser::token *>({NULL, NULL}),
@@ -71,6 +71,7 @@ void init_stdlib(context &t) {
 	t[std::string("-")] = sub;
 	t[std::string("*")] = mul;
 	t[std::string("/")] = div;
+	t[std::string("mod")] = mod;
 
 	t[std::string("define")] = def;
 	t[std::string("if")    ] = ifelse;
@@ -94,7 +95,7 @@ int main() {
 
 	std::string s;
 	context c;
-	init_stdlib(c);
+	scheme::init_stdlib(c);
 
 	while (true) {
 

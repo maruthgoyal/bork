@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <iostream>
+#include <cmath>
 
 #include "../eval/eval.hpp"
 #include "stdlib.hpp"
@@ -35,7 +36,6 @@ eval::value *stdlib::add(std::vector<parser::thing *> args, context& c) {
 			total += n->get_val();
 
 		}
-
 		return new eval::number(total);
 	}
 
@@ -142,6 +142,34 @@ eval::value *stdlib::divide(std::vector<parser::thing *> args, context& c) {
 	}
 
 	stdlib::exit("DIVIDE ONLY WORKS WITH NUMBERS.");
+
+}
+
+eval::value *stdlib::modulus(std::vector<parser::thing *> args, context& c) {
+
+	std::vector<eval::value *> e_args;
+	for(int i = 1; i < args.size(); i++) {
+		e_args.push_back(eval::eval(args[i], c));
+	}
+
+	if (e_args[0]->get_type() == eval::type::NUMBER) {
+
+		double total = (static_cast<eval::number *>(e_args[0]))->get_val();
+
+		for (int i = 1; i < e_args.size(); i++) {
+
+			if (e_args[i]->get_type() != eval::type::NUMBER)
+				stdlib::exit("ALL ARGUMENTS TO mod MUST BE NUMBERS");
+
+			eval::number* n = static_cast<eval::number *>(e_args[i]);
+			total = fmod(total, n->get_val());
+
+		}
+
+		return new eval::number(total);
+	}
+
+	stdlib::exit("MODULUS ONLY WORKS WITH NUMBERS.");
 
 }
 
