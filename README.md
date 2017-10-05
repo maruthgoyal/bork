@@ -11,6 +11,26 @@
 
 (hai "pupper")
 ```
+
+```scheme
+(define (fibonacci n) 
+	(if (<= n 1) 
+		n 
+		(+ 
+			(f (- n 1)) 
+			(f (- n 2))
+		)
+	)
+)
+
+(display 
+	(fibonacci 5)
+)
+(display 
+	(fibonacci 20)
+)
+```
+
 **Bork** is a mini-language modeled after [**LISP**](https://en.wikipedia.org/wiki/Lisp_(programming_language)).
 
 You can define your own functions, use if-else, do arithmetic, use boolean operators, and yes, it supports recursion. 
