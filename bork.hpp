@@ -5,7 +5,7 @@
 #include <string>
 #include "eval/eval.hpp"
 
-namespace scheme {
+namespace bork {
 	void init_stdlib(context&);
 }
 

@@ -19,81 +19,49 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#ifndef _USERS_MARUTHGOYAL_SP_PARSER_PARSER_HPP_
-#define _USERS_MARUTHGOYAL_SP_PARSER_PARSER_HPP_
 
 #include <string>
-#include <vector>
+#include <iostream>
+#include "../parser/parser.hpp"
 
-namespace parser {
 
-  class thing;
-  class token;
-  class expression;
-  enum class type;
-  parser::thing *parse(std::string);
+std::string pprint_(parser::thing *t, int i) {
 
-} // namespace parser
+	std::string s;
 
-enum class parser::type { 
+	for (int j = 0; j < i; j++) {
+		s.push_back('\t');
+	}
 
-  TOKEN, EXPRESSION, EVALED
+	if (t->t == parser::type::TOKEN) {
+		s += ((static_cast<parser::token *>(t))->get_content());
+	}
 
-};
+	else if (t->t == parser::type::EXPRESSION) {
+		
+		s.push_back('(');
+		s.push_back('\n');
 
-class parser::thing {
+		parser::expression *e = static_cast<parser::expression *>(t);
 
-public:
-  type t;
+		for (int j = 0; j < e->things.size(); j++) {
+			s += pprint_(e->things[j], i+1);
+			s.push_back('\n');
+		}
 
-};
+		for (int j = 0; j < i; j++) {
+			s.push_back('\t');
+		}
 
-class parser::token : public parser::thing {
- 
-  std::string content;
+		s.push_back(')');
+		s.push_back('\n');
 
-public:
- 
-  explicit token(const std::string &s) {
- 
-    content.assign(s);
-    t = parser::type::TOKEN;
- 
-  }
+	}
 
-  std::string get_content() { 
-    return content;
-  }
- 
-  void set_content(std::string s) { 
-    content = s;
-  }
+	return s;
 
-};
+}
 
-class parser::expression : public parser::thing {
-
-public:
- 
-  std::vector<parser::thing *> things;
- 
-  expression() {
-
-    t = parser::type::EXPRESSION;
-
-  }
-
-  bool insert_thing(thing *t) {
-
-    if (t != NULL) {
-      things.push_back(t);
-      return true;
-    }
-
-    return false;
-    
-  }
-
-};
-
-#endif // _USERS_MARUTHGOYAL_SP_PARSER_PARSER_HPP_
+std::string pprint(std::string s) {
+	return pprint_(parser::parse(s), 0);
+}

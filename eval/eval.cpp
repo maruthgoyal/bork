@@ -1,5 +1,24 @@
-// "Copyright 2017 Maruth Goyal"
+/*
+Copyright (c) 2017 Maruth Goyal
 
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 #include <unordered_map>
 #include <string>
 #include <iostream>
@@ -8,43 +27,57 @@
 #include "../parser/parser.hpp"
 #include "../stdlib/stdlib.hpp"
 #include "eval.hpp"
-#include "../scheme.hpp"
+#include "../bork.hpp"
 
+/*
+	* Returns whether a string is entirely composed of digits or not.
+	* ARGS:
+		* const std::string &str --> Reference to the string to check.
+	* RETURNS:
+		* bool                   --> True if all digits, false otherwise
+*/
 bool is_digits(const std::string &str) {
     return str.find_first_not_of(".0123456789") == std::string::npos;
 }
 
-// void sub_arg(parser::expression* e, parser::token to_replace, eval::value *val) {
-
-// 	for(int i = 0; i < e->things.size(); i++) {
-
-// 		if (e->things[i]->t == parser::type::TOKEN) {
-
-// 			parser::token *t = static_cast<parser::token *>(e->things[i]);
-
-// 			if ( t->get_content().compare(to_replace.get_content()) == 0)
-// 				*(e->things[i]) = *val;
-		
-// 		}
-
-// 		else if (e->things[i]->t == parser::type::EXPRESSION) {
-// 			parser::expression *e_prime = static_cast<parser::expression *>(e->things[i]);
-// 			sub_arg(e_prime, to_replace, val);
-// 		}
-	
-// 	}
-
-// }
-
-eval::value* eval::get_var(std::string s, context& c) {
+/*
+	* Gets a value from the environment, given a variable name.
+	* ARGS:
+		* std::string s --> Name of the Variable
+		* context &c    --> Reference to the environment
+	* RETURNS:
+		* eval::value * --> Pointer to the value of the variable (NUMBER, STRING, FUNC, BOO)
+		* NULL if no var of that name in the env
+*/
+eval::value *eval::get_var(std::string s, context& c) {
 	if (c.count(s) == 0)
 		return NULL;
 
 	return c[s];
 }
 
+/*
 
-eval::value *eval::func_eval(eval::func *func, std::vector<parser::thing *> args, context& c) {
+	* Evaluates a function with given arguments
+	* If the function is a part of the STDLIB, leave it to evaluate it.
+	* If it is a user defined function:
+		* Create a new env local to this function
+		* Initialise the env, add all user defined functions to it too from the primary env
+		* Evaluate each of the arguments.
+		* Add each evaluated argument to the env, corresponding to the argument name
+		* Eval the user-defined function with the new context.
+		* The new env auto-deletes since it's stack-allocated
+
+	* ARGS:
+		* eval::func *func                  --> Pointer to the function object
+		* std::vector<parser::thing *> args --> Vector of pointers to "things" (expr or token) which are the args to the fn
+		* context &c                        --> The env
+
+	* RETURNS:
+		* eval::value *                     --> Pointer to value obtained on evaluating the fn.
+
+*/
+eval::value *eval::func_eval(eval::func *func, std::vector<parser::thing *> args, context &c) {
 
 	if (func->is_std())
 		return func->f(args, c);
@@ -56,7 +89,7 @@ eval::value *eval::func_eval(eval::func *func, std::vector<parser::thing *> args
 	}
 
 	context c2;
-	scheme::init_stdlib(c2);
+	bork::init_stdlib(c2);
 
 	for (auto i : c) {
 		if ((i.second)->get_type() == eval::type::FUNC)
@@ -72,18 +105,33 @@ eval::value *eval::func_eval(eval::func *func, std::vector<parser::thing *> args
 
 	eval::value *val = eval::eval(e, c2);
 
-	// for(int i = 0; i < func->arg_list->size(); i++) {
-
-	// 	c.erase(((*(func->arg_list))[i])->get_content());
-
-	// }
-
 	return val;
 
 }
 
+/*
 
-eval::value *eval::eval(parser::thing *thing, context& c) {
+	* Evaluates the Parse Tree.
+	* If it's a token:
+		* If it's "true" or "false", return a corresponding Boolean
+		* If it's composed of digits, return a correpsonding Number
+		* If it's a variable in the env, return that
+		* Else, return a suitable string
+
+	* If it's an expression:
+		* Take the first element, verify that it's a function
+		* Match the number of remaining entities in the expression to the num of args of the fn
+		* Evaluate the function with those arguments, return the value
+
+	* ARGS:
+		* parser::thing *thing --> Pointer to root element of sub-tree to evaluate
+		* context &c           --> Reference to Env to evaluate the tree within.
+
+	* RETURNS:
+		* eval::value *        --> Pointer to the value obtained
+
+*/
+eval::value *eval::eval(parser::thing *thing, context &c) {
 
 	if (thing->t == parser::type::TOKEN) {
 
