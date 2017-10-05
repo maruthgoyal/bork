@@ -47,7 +47,7 @@ You can define your own functions, use if-else, do arithmetic, use boolean opera
 - `(or arg1 arg2 ...)` Computes boolean OR
 - `(not arg1)`
 - `(< arg1 arg2)` returns arg1 < arg2
-_ `(> arg1 arg2)`
+- `(> arg1 arg2)`
 - `(<= arg1 arg2)`
 - `(>= arg1 arg2)`
 - `(= arg1 arg2)` Computes EQUALITY
