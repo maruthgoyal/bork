@@ -27,7 +27,6 @@ SOFTWARE.
 #include "../parser/parser.hpp"
 #include "../stdlib/stdlib.hpp"
 #include "eval.hpp"
-#include "../bork.hpp"
 
 /*
 	* Returns whether a string is entirely composed of digits or not.
@@ -89,7 +88,7 @@ eval::value *eval::func_eval(eval::func *func, std::vector<parser::thing *> args
 	}
 
 	context c2;
-	bork::init_stdlib(c2);
+	stdlib::init_stdlib(c2);
 
 	for (auto i : c) {
 		if ((i.second)->get_type() == eval::type::FUNC)

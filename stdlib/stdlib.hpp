@@ -3,7 +3,6 @@
 #define STDLIB_STDLIB_HPP_
 
 #include "../eval/eval.hpp"
-#include <iostream>
 
 namespace stdlib {
 
@@ -31,6 +30,7 @@ namespace stdlib {
 
 
 	void exit(std::string msg);
+	void init_stdlib(context&);
 
 }
 

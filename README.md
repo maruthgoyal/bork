@@ -57,7 +57,11 @@ You can define your own functions, use if-else, do arithmetic, use boolean opera
 - `(define (name arg1 arg2 ...) body)` Defines a function with name name, arguments arg1 arg2 ... and body, body
 
 ## Installing
-Clone the repository, and then type in `make` in the terminal, in the directory.
+```bash
+git clone https://github.com/maruthgoyal/bork.git
+cmake
+make
+```
 
 ## Usage
 - Start the REPL with the command `./bork`
