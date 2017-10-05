@@ -38,23 +38,23 @@ You can define your own functions, use if-else, do arithmetic, use boolean opera
 **Bork** was created as a side-project, an attempt to develop an interpreter for a LISP-like language without having any prior education on computer languages.
 
 ## Functions
-- (+ _<arg1>_ _<arg2>_ ...) Adds all the arguments. Can be strings or numbers
-- (- _<arg1>_ _<arg2>_ ...) Subtracts all the arguments. Must be numbers
-- (* _<arg1>_ _<arg2>_ ...) Multiplies
-- (/ _<arg1>_ _<arg2>_ ...) Divides
-- (mod _<arg1>_ _<arg2>_ ...) takes the modulo (remainder)
-- (and _<arg1>_ _<arg2>_ ...) Computes boolean AND
-- (or _<arg1>_ _<arg2>_ ...)) Computes boolean OR
-- (not <arg1>)
-- (< _<arg1>_ _<arg2>_ ) returns _arg1_ < _arg2_
-_ (> _<arg1>_ _<arg2>_ )
-- (<= _<arg1>_ _<arg2>_ )
-- (>= _<arg1>_ _<arg2>_ )
-- (= _<arg1>_ _<arg2>_ ) Computes EQUALITY
-- (!= _<arg1>_ _<arg2>_) Not equal
-- (if _<arg1>_ _<arg2>_ _<arg3>_) If _<arg1>_ is true, evaluates _<arg2>_ else _<arg3>_
-- (define _<name>_ _<val>_) Defines a variable with name _<name>_ and value _<val>_
-- (define (_<name>_ _<arg1>_ _<arg2>_ ...) _<body>_) Defines a function with name _<name>_, arguments _<arg1>_ _<arg2>_ ... and body _<body>_
+- `(+ arg1 arg2 ...)` Adds all the arguments. Can be strings or numbers
+- `(- arg1 arg2 ...)` Subtracts all the arguments. Must be numbers
+- `(* arg1 arg2 ...)` Multiplies
+- `(/ arg1 arg2 ...)` Divides
+- `(mod arg1 arg2 ...)` takes the modulo (remainder)
+- `(and arg1 arg2 ...)` Computes boolean AND
+- `(or arg1 arg2 ...)` Computes boolean OR
+- `(not arg1)`
+- `(< arg1 arg2)` returns arg1 < arg2
+_ `(> arg1 arg2)`
+- `(<= arg1 arg2)`
+- `(>= arg1 arg2)`
+- `(= arg1 arg2)` Computes EQUALITY
+- `(!= arg1 arg2)` Not equal
+- `(if arg1 arg2 arg3)` If arg1 is true, evaluates arg2 else arg3
+- `(define name val)` Defines a variable with name _<name>_ and value _<val>_
+- `(define (name arg1 arg2 ...) body)` Defines a function with name name, arguments arg1 arg2 ... and body, body
 
 ## Installing
 Clone the repository, and then type in `make` in the terminal, in the directory.
