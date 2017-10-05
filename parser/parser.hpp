@@ -27,72 +27,76 @@ SOFTWARE.
 
 namespace parser {
 
-  class thing;
-  class token;
-  class expression;
-  enum class type;
-  parser::thing *parse(std::string);
+    class thing;
+
+    class token;
+
+    class expression;
+
+    enum class type;
+
+    parser::thing *parse(std::string);
 
 } // namespace parser
 
-enum class parser::type { 
+enum class parser::type {
 
-  TOKEN, EXPRESSION, EVALED
+    TOKEN, EXPRESSION, EVALED
 
 };
 
 class parser::thing {
 
 public:
-  type t;
+    type t;
 
 };
 
 class parser::token : public parser::thing {
- 
-  std::string content;
+
+    std::string content;
 
 public:
- 
-  explicit token(const std::string &s) {
- 
-    content.assign(s);
-    t = parser::type::TOKEN;
- 
-  }
 
-  std::string get_content() { 
-    return content;
-  }
- 
-  void set_content(std::string s) { 
-    content = s;
-  }
+    explicit token(const std::string &s) {
+
+        content.assign(s);
+        t = parser::type::TOKEN;
+
+    }
+
+    std::string get_content() {
+        return content;
+    }
+
+    void set_content(std::string s) {
+        content = s;
+    }
 
 };
 
 class parser::expression : public parser::thing {
 
 public:
- 
-  std::vector<parser::thing *> things;
- 
-  expression() {
 
-    t = parser::type::EXPRESSION;
+    std::vector<parser::thing *> things;
 
-  }
+    expression() {
 
-  bool insert_thing(thing *t) {
+        t = parser::type::EXPRESSION;
 
-    if (t != NULL) {
-      things.push_back(t);
-      return true;
     }
 
-    return false;
-    
-  }
+    bool insert_thing(thing *t) {
+
+        if (t != NULL) {
+            things.push_back(t);
+            return true;
+        }
+
+        return false;
+
+    }
 
 };
 

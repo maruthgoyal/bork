@@ -21,11 +21,10 @@ SOFTWARE.
 */
 #include <cstdlib>
 #include <iostream>
-#include <string>
 #include <vector>
 
 #include "parser.hpp"
-#include "../stdlib/stdlib.hpp"
+#include "stdlib.hpp"
 
 /*
   * Tokenize and parse string
@@ -52,66 +51,60 @@ SOFTWARE.
     * parser::thing *          --> Pointer to a "thing" (token or expression) which is the root node in the tree
 */
 
-parser::thing* parse_(std::string s, int &i, std::vector<char> &stack) {
- 
-  while (std::isspace(s[i]) && i < s.length()) i++;
+parser::thing *parse_(std::string s, int &i, std::vector<char> &stack) {
 
-  if (s[i] == '(') {
+    while (std::isspace(s[i]) && i < s.length()) i++;
 
-    parser::expression* e = new parser::expression;
+    if (s[i] == '(') {
 
-    stack.push_back('(');
-    i++;
+        parser::expression *e = new parser::expression;
 
-    while (!stack.empty()) {
-      if(!(e->insert_thing(parse_(s, i, stack))))
-        break;
-    }  // stack empty checking WHILE ENDs
+        stack.push_back('(');
+        i++;
 
-    return e;
- 
-  }
+        while (!stack.empty()) {
+            if (!(e->insert_thing(parse_(s, i, stack))))
+                break;
+        }  // stack empty checking WHILE ENDs
 
-  else if (s[i] == ')') {
-   
-    if (stack.empty())
-      stdlib::exit("UNMATCHED BRACES");
-  
-    stack.pop_back();
-    i++;
-  
-  }
+        return e;
 
-  else {
-   
-    std::string buff;
-    bool ignore_space = false, started_string = false;
+    } else if (s[i] == ')') {
 
-    while ((ignore_space || !isspace(s[i])) && s[i] != ')') {
-      
-      buff.push_back(s[i]);
-      i++;
+        if (stack.empty())
+            stdlib::exit("UNMATCHED BRACES");
 
-      if (s[i-1] == '"') {
-        
-        if (!started_string) {
-          started_string = true;
-          ignore_space = true;
+        stack.pop_back();
+        i++;
+
+    } else {
+
+        std::string buff;
+        bool ignore_space = false, started_string = false;
+
+        while ((ignore_space || !isspace(s[i])) && s[i] != ')') {
+
+            buff.push_back(s[i]);
+            i++;
+
+            if (s[i - 1] == '"') {
+
+                if (!started_string) {
+                    started_string = true;
+                    ignore_space = true;
+                } else
+                    break;
+
+            }
+
         }
 
-        else
-          break;
+        parser::token *t = new parser::token(buff);
+        return t;
 
-      }
-    
     }
 
-    parser::token *t = new parser::token(buff);
-    return t;
-
-  }
-
-  return NULL;
+    return NULL;
 
 }
 
@@ -122,10 +115,10 @@ parser::thing* parse_(std::string s, int &i, std::vector<char> &stack) {
   * RETURNS:
     * parser::thing *  --> Pointer to a "thing" (token or expression) which is the root of the parse tree 
 */
-parser::thing* parser::parse(std::string s) {
+parser::thing *parser::parse(std::string s) {
 
-  int i = 0;
-  std::vector<char> stack;
-  return parse_(s, i, stack);
+    int i = 0;
+    std::vector<char> stack;
+    return parse_(s, i, stack);
 
 }
