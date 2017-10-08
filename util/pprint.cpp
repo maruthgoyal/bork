@@ -25,42 +25,41 @@ SOFTWARE.
 #include "parser.hpp"
 #include "pprint.hpp"
 
-
 std::string pprint_(parser::thing *t, int i) {
 
-    std::string s;
+  std::string s;
+
+  for (int j = 0; j < i; j++) {
+    s.push_back('\t');
+  }
+
+  if (t->t==parser::type::TOKEN) {
+    s += ((static_cast<parser::token *>(t))->get_content());
+  } else if (t->t==parser::type::EXPRESSION) {
+
+    s.push_back('(');
+    s.push_back('\n');
+
+    parser::expression *e = static_cast<parser::expression *>(t);
+
+    for (int j = 0; j < e->things.size(); j++) {
+      s += pprint_(e->things[j], i + 1);
+      s.push_back('\n');
+    }
 
     for (int j = 0; j < i; j++) {
-        s.push_back('\t');
+      s.push_back('\t');
     }
 
-    if (t->t == parser::type::TOKEN) {
-        s += ((static_cast<parser::token *>(t))->get_content());
-    } else if (t->t == parser::type::EXPRESSION) {
+    s.push_back(')');
+    s.push_back('\n');
 
-        s.push_back('(');
-        s.push_back('\n');
+  }
 
-        parser::expression *e = static_cast<parser::expression *>(t);
-
-        for (int j = 0; j < e->things.size(); j++) {
-            s += pprint_(e->things[j], i + 1);
-            s.push_back('\n');
-        }
-
-        for (int j = 0; j < i; j++) {
-            s.push_back('\t');
-        }
-
-        s.push_back(')');
-        s.push_back('\n');
-
-    }
-
-    return s;
+  return s;
 
 }
 
 std::string util::pprint(std::string s) {
-    return pprint_(parser::parse(s), 0);
+  return pprint_(parser::parse(s), 0);
 }

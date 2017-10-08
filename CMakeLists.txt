@@ -5,6 +5,5 @@ include_directories(${CMAKE_SOURCE_DIR}/stdlib ${CMAKE_SOURCE_DIR}/parser ${CMAK
 
 add_library(bork_lib SHARED ${CMAKE_SOURCE_DIR}/stdlib/stdlib.cpp ${CMAKE_SOURCE_DIR}/eval/eval.cpp ${CMAKE_SOURCE_DIR}/parser/parser.cpp ${CMAKE_SOURCE_DIR}/util/pprint.cpp)
 
-
 add_executable(bork bork.cpp)
 target_link_libraries(bork bork_lib)

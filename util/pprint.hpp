@@ -5,7 +5,7 @@
 #include <string>
 
 namespace util {
-    std::string pprint(std::string);
+std::string pprint(std::string);
 }
 
 #endif

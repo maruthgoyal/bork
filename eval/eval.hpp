@@ -26,183 +26,182 @@ SOFTWARE.
 #include <unordered_map>
 #include "../parser/parser.hpp"
 
-
 namespace eval {
 
-    enum class type;
+enum class type;
 
-    class value;
+class value;
 
-    class func;
+class func;
 
-    class number;
+class number;
 
-    class string;
+class string;
 
-    class boolean;
+class boolean;
 
-    eval::value *eval(parser::thing *, std::unordered_map<std::string, eval::value *> &);
+eval::value *eval(parser::thing *, std::unordered_map<std::string, eval::value *> &);
 
-    eval::value *get_var(std::string, std::unordered_map<std::string, eval::value *> &);
+eval::value *get_var(std::string, std::unordered_map<std::string, eval::value *> &);
 
-    eval::value *
-    func_eval(eval::func *, std::vector<parser::thing *>, std::unordered_map<std::string, eval::value *> &);
+eval::value *
+func_eval(eval::func *, std::vector<parser::thing *>, std::unordered_map<std::string, eval::value *> &);
 
 }
 
 typedef std::unordered_map<std::string, eval::value *> context;
 enum class eval::type {
-    NUMBER, STRING, BOO, FUNC
+  NUMBER, STRING, BOO, FUNC
 };
 
 class eval::value : public parser::thing {
 
-    eval::type ty;
+  eval::type ty;
 
-public:
+ public:
 
-    value() {
-        t = parser::type::EVALED;
-    }
+  value() {
+    t = parser::type::EVALED;
+  }
 
-    eval::type get_type() {
-        return ty;
-    }
+  eval::type get_type() {
+    return ty;
+  }
 
-    void set_type(eval::type typ) {
-        ty = typ;
-    }
+  void set_type(eval::type typ) {
+    ty = typ;
+  }
 
-    virtual std::string to_string() { return std::string(""); };
+  virtual std::string to_string() { return std::string(""); };
 
 };
 
 class eval::func : public eval::value {
 
-    parser::expression *body;
-    bool eval_args, var_args;
-    bool is_std_fn;
+  parser::expression *body;
+  bool eval_args, var_args;
+  bool is_std_fn;
 
-public:
+ public:
 
-    eval::value *(*f)(std::vector<parser::thing *>, context &);
+  eval::value *(*f)(std::vector<parser::thing *>, context &);
 
-    std::vector<parser::token *> *arg_list;
+  std::vector<parser::token *> *arg_list;
 
-    explicit func(parser::expression *func_body, std::vector<parser::token *> *args_list, bool to_eval_args,
-                  bool std_fn) {
-        body = func_body;
-        arg_list = args_list;
-        eval_args = to_eval_args;
-        is_std_fn = std_fn;
-        set_type(eval::type::FUNC);
-    }
+  explicit func(parser::expression *func_body, std::vector<parser::token *> *args_list, bool to_eval_args,
+                bool std_fn) {
+    body = func_body;
+    arg_list = args_list;
+    eval_args = to_eval_args;
+    is_std_fn = std_fn;
+    set_type(eval::type::FUNC);
+  }
 
-    explicit func(eval::value *(*g)(std::vector<parser::thing *>, context &),
-                  std::vector<parser::token *> *args_list, bool to_eval_args,
-                  bool std_fn, bool v_args) {
-        f = g;
-        arg_list = args_list;
-        eval_args = to_eval_args;
-        is_std_fn = std_fn;
-        var_args = v_args;
-        set_type(eval::type::FUNC);
-    }
+  explicit func(eval::value *(*g)(std::vector<parser::thing *>, context &),
+                std::vector<parser::token *> *args_list, bool to_eval_args,
+                bool std_fn, bool v_args) {
+    f = g;
+    arg_list = args_list;
+    eval_args = to_eval_args;
+    is_std_fn = std_fn;
+    var_args = v_args;
+    set_type(eval::type::FUNC);
+  }
 
-    parser::expression *get_body() {
-        return body;
-    }
+  parser::expression *get_body() {
+    return body;
+  }
 
-    int get_n_args() {
-        return arg_list->size();
-    }
+  int get_n_args() {
+    return arg_list->size();
+  }
 
-    bool has_var_args() {
-        return var_args;
-    }
+  bool has_var_args() {
+    return var_args;
+  }
 
-    bool to_eval_args() {
-        return eval_args;
-    }
+  bool to_eval_args() {
+    return eval_args;
+  }
 
-    bool is_std() {
-        return is_std_fn;
-    }
+  bool is_std() {
+    return is_std_fn;
+  }
 
-    std::string to_string() {
-        return std::string("");
-    }
+  std::string to_string() {
+    return std::string("");
+  }
 
 };
 
 class eval::number : public eval::value {
 
-    double val;
+  double val;
 
-public:
+ public:
 
-    explicit number(double d) {
-        val = d;
-        set_type(eval::type::NUMBER);
-    }
+  explicit number(double d) {
+    val = d;
+    set_type(eval::type::NUMBER);
+  }
 
-    double get_val() {
-        return val;
-    }
+  double get_val() {
+    return val;
+  }
 
-    std::string to_string() {
-        return std::to_string(val);
-    }
+  std::string to_string() {
+    return std::to_string(val);
+  }
 
 };
 
 class eval::string : public eval::value {
 
-    std::string val;
+  std::string val;
 
-public:
+ public:
 
-    explicit string(std::string s) {
-        val = s;
-        set_type(eval::type::STRING);
-    }
+  explicit string(std::string s) {
+    val = s;
+    set_type(eval::type::STRING);
+  }
 
-    std::string get_val() {
-        return val;
-    }
+  std::string get_val() {
+    return val;
+  }
 
-    std::string to_string() {
-        return val;
-    }
+  std::string to_string() {
+    return val;
+  }
 
 };
 
 class eval::boolean : public eval::value {
-    bool val;
+  bool val;
 
-public:
+ public:
 
-    explicit boolean(bool b) {
-        val = b;
-        set_type(eval::type::BOO);
-    }
+  explicit boolean(bool b) {
+    val = b;
+    set_type(eval::type::BOO);
+  }
 
-    bool get_val() {
-        return val;
-    }
+  bool get_val() {
+    return val;
+  }
 
-    void negate() {
-        val = !val;
-    }
+  void negate() {
+    val = !val;
+  }
 
-    std::string to_string() {
+  std::string to_string() {
 
-        if (val)
-            return std::string("true");
+    if (val)
+      return std::string("true");
 
-        return std::string("false");
+    return std::string("false");
 
-    }
+  }
 };
 
 #endif  // _USERS_MARUTHGOYAL_SP_EVAL_EVAL_HPP_

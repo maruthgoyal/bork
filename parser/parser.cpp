@@ -53,58 +53,58 @@ SOFTWARE.
 
 parser::thing *parse_(std::string s, int &i, std::vector<char> &stack) {
 
-    while (std::isspace(s[i]) && i < s.length()) i++;
+  while (std::isspace(s[i]) && i < s.length()) i++;
 
-    if (s[i] == '(') {
+  if (s[i]=='(') {
 
-        parser::expression *e = new parser::expression;
+    parser::expression *e = new parser::expression;
 
-        stack.push_back('(');
-        i++;
+    stack.push_back('(');
+    i++;
 
-        while (!stack.empty()) {
-            if (!(e->insert_thing(parse_(s, i, stack))))
-                break;
-        }  // stack empty checking WHILE ENDs
+    while (!stack.empty()) {
+      if (!(e->insert_thing(parse_(s, i, stack))))
+        break;
+    }  // stack empty checking WHILE ENDs
 
-        return e;
+    return e;
 
-    } else if (s[i] == ')') {
+  } else if (s[i]==')') {
 
-        if (stack.empty())
-            stdlib::exit("UNMATCHED BRACES");
+    if (stack.empty())
+      stdlib::exit("UNMATCHED BRACES");
 
-        stack.pop_back();
-        i++;
+    stack.pop_back();
+    i++;
 
-    } else {
+  } else {
 
-        std::string buff;
-        bool ignore_space = false, started_string = false;
+    std::string buff;
+    bool ignore_space = false, started_string = false;
 
-        while ((ignore_space || !isspace(s[i])) && s[i] != ')') {
+    while ((ignore_space || !isspace(s[i])) && s[i]!=')') {
 
-            buff.push_back(s[i]);
-            i++;
+      buff.push_back(s[i]);
+      i++;
 
-            if (s[i - 1] == '"') {
+      if (s[i - 1]=='"') {
 
-                if (!started_string) {
-                    started_string = true;
-                    ignore_space = true;
-                } else
-                    break;
+        if (!started_string) {
+          started_string = true;
+          ignore_space = true;
+        } else
+          break;
 
-            }
-
-        }
-
-        parser::token *t = new parser::token(buff);
-        return t;
+      }
 
     }
 
-    return NULL;
+    parser::token *t = new parser::token(buff);
+    return t;
+
+  }
+
+  return NULL;
 
 }
 
@@ -117,8 +117,8 @@ parser::thing *parse_(std::string s, int &i, std::vector<char> &stack) {
 */
 parser::thing *parser::parse(std::string s) {
 
-    int i = 0;
-    std::vector<char> stack;
-    return parse_(s, i, stack);
+  int i = 0;
+  std::vector<char> stack;
+  return parse_(s, i, stack);
 
 }

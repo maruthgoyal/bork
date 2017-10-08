@@ -36,18 +36,18 @@ SOFTWARE.
 */
 void repl() {
 
-    std::string s;
-    context c;
-    stdlib::init_stdlib(c);
+  std::string s;
+  context c;
+  stdlib::init_stdlib(c);
 
-    while (true) {
+  while (true) {
 
-        std::cout << ">>> ";
+    std::cout << ">>> ";
 
-        std::getline(std::cin, s);
-        eval::eval(parser::parse(s), c);
+    std::getline(std::cin, s);
+    eval::eval(parser::parse(s), c);
 
-    }
+  }
 
 }
 
@@ -59,49 +59,48 @@ void repl() {
 */
 void read_exp(std::ifstream &f, std::string &buf) {
 
-    char c;
+  char c;
+
+  f.get(c);
+  while (c!='(' && f.good()) f.get(c);
+
+  buf.push_back(c);
+  int stack = 1;
+
+  while (f.good() && stack) {
 
     f.get(c);
-    while (c != '(' && f.good()) f.get(c);
+    buf += c;
 
-    buf.push_back(c);
-    int stack = 1;
+    if (c==')') stack--;
+    if (c=='(') stack++;
 
-    while (f.good() && stack) {
-
-        f.get(c);
-        buf += c;
-
-        if (c == ')') stack--;
-        if (c == '(') stack++;
-
-    }
+  }
 
 }
 
-
-/* 
+/*
 	* Read Program from file and eval
 	* ARGS:
 		* std::string filename --> Name of the file to read.
 */
 void from_file(const std::string &filename) {
 
-    std::ifstream f(filename);
-    std::string buf;
+  std::ifstream f(filename);
+  std::string buf;
 
-    context c;
-    stdlib::init_stdlib(c);
+  context c;
+  stdlib::init_stdlib(c);
 
-    while (f.good()) {
+  while (f.good()) {
 
-        read_exp(f, buf);
-        eval::eval(parser::parse(buf), c);
-        buf.clear();
+    read_exp(f, buf);
+    eval::eval(parser::parse(buf), c);
+    buf.clear();
 
-    }
+  }
 
-    f.close();
+  f.close();
 
 }
 
@@ -115,39 +114,39 @@ void from_file(const std::string &filename) {
 
 void pretty_print(const std::string &filename) {
 
-    std::ifstream f(filename);
-    std::ofstream of(filename + "___");
-    std::string buf;
+  std::ifstream f(filename);
+  std::ofstream of(filename + "___");
+  std::string buf;
 
-    while (f.good()) {
-        read_exp(f, buf);
-        std::string s = util::pprint(buf);
-        for (auto d : s) {
-            of.put(d);
-        }
+  while (f.good()) {
+    read_exp(f, buf);
+    std::string s = util::pprint(buf);
+    for (auto d : s) {
+      of.put(d);
     }
+  }
 
-    f.close();
-    of.close();
+  f.close();
+  of.close();
 
 }
 
 int main(int argc, char *argv[]) {
 
-    if (argc == 1)
-        repl();
+  if (argc==1)
+    repl();
 
-    else if (argc == 2) {
-        from_file(std::string(argv[1]));
-    } else if (argc == 3) {
+  else if (argc==2) {
+    from_file(std::string(argv[1]));
+  } else if (argc==3) {
 
-        pretty_print(argv[1]);
+    pretty_print(argv[1]);
 
-    } else {
-        std::cerr << "SPECIFY 1 FILENAME TO INTERPRET. OR SPECIFY NONE TO START REPL.";
-        return 1;
-    }
+  } else {
+    std::cerr << "SPECIFY 1 FILENAME TO INTERPRET. OR SPECIFY NONE TO START REPL.";
+    return 1;
+  }
 
-    return 0;
+  return 0;
 
 }
