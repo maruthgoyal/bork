@@ -4,10 +4,7 @@
 		(display 
 			(+ "wai halo der " 
 				fren 
-				"! nice doin u a meet! blep."
-			)
-		)
-)
+				"! nice doin u a meet! blep.")))
 
 (hai "pupper")
 ```
@@ -18,17 +15,10 @@
 		n 
 		(+ 
 			(f (- n 1)) 
-			(f (- n 2))
-		)
-	)
-)
+			(f (- n 2)))))
 
-(display 
-	(fibonacci 5)
-)
-(display 
-	(fibonacci 20)
-)
+(display (fibonacci 5))
+(display (fibonacci 20))
 ```
 
 **Bork** is a mini-language modeled after [**LISP**](https://en.wikipedia.org/wiki/Lisp_(programming_language)).
