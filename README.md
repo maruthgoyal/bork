@@ -49,7 +49,8 @@ You can define your own functions, use if-else, do arithmetic, use boolean opera
 ## Installing
 ```bash
 git clone https://github.com/maruthgoyal/bork.git
-cmake
+cd bork
+cmake .
 make
 ```
 
